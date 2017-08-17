@@ -17,24 +17,44 @@ def init_db():
       db.cursor().executescript(f.read())
     db.commit()
 
+def populate_db():
+  with app.app_context():
+    url = "http://www.speedrun.com/api/v1/games?embed=categories"
+    response = urllib.urlopen(url)
+    data = json.loads(response.read())
+
+    print 'test'
+
+    db = get_db()
+
+    for x in data['data']:
+      name = x['names']['international']
+      consoles = str(x['platforms'])
+      for y in x['categories']['data']:
+        if y['type'] == 'per-game':
+          db.cursor().execute('INSERT INTO games VALUES ("' + name + '", "' +
+          consoles + '", "' + y['name'] + '")')
+          db.commit()
+
 @app.route("/")
 def hello():
-  url = "http://www.speedrun.com/api/v1/games?embed=categories"
-  response = urllib.urlopen(url)
-  data = json.loads(response.read())
+  db = get_db()
 
-  output = ''
+  page = []
+  page.append('<html><body><table>')
+  sql = 'SELECT * FROM games'
+  for row in db.cursor().execute(sql):
+    page.append('<tr>')
+    page.append('<td>')
+    page.append(row[0])
+    page.append('</td>')
+    page.append('<td>')
+    page.append(row[2])
+    page.append('</td>')
+    page.append('</tr>')
 
-  for x in data['data']:
-    name = x['names']['international']
-    consoles = x['platforms']
-    categories = []
-    for y in x['categories']['data']:
-      if y['type'] == 'per-game':
-        categories.append(y['name'])
-    output = output + name + str(consoles) + str(categories) + '<br>'
-
-  return output
+  page.append('</table></body></html>')
+  return ''.join(page)
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0')
