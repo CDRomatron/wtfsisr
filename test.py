@@ -19,30 +19,36 @@ def init_db():
 
 def populate_db():
   with app.app_context():
+    flag = True
     url = "http://www.speedrun.com/api/v1/games?embed=categories&max=200"
-    response = urllib.urlopen(url)
-    data = json.loads(response.read())
+    while flag:
+      response = urllib.urlopen(url)
+      data = json.loads(response.read())
 
-    print 'test'
+      print 'test'
 
-    db = get_db()
+      db = get_db()
 
-    for x in data['data']:
-      name = x['names']['international']
-      name = re.sub('[^A-Za-z0-9 ()%]+', ' ', name).lstrip()
-      consoles = str(x['platforms'])
-      logourl = x['assets']['cover-large']['uri']
-      for y in x['categories']['data']:
-        if y['type'] == 'per-game':
-          category = y['name']
-          category = re.sub('[^A-Za-z0-9 ()%]+', ' ', category).lstrip()
-          lburl = y['weblink']
-          print name + ' ' + category
-          sql = 'INSERT INTO games VALUES ("' + name + '", "' + consoles + '", "' + category + '", "' + logourl + '", "' + lburl + '")'
-          print sql
-          db.cursor().execute(sql)
-          db.commit()
-
+      for x in data['data']:
+        name = x['names']['international']
+        name = re.sub('[^A-Za-z0-9 ()%]+', ' ', name).lstrip()
+        consoles = str(x['platforms'])
+        logourl = x['assets']['cover-large']['uri']
+        for y in x['categories']['data']:
+          if y['type'] == 'per-game':
+            category = y['name']
+            category = re.sub('[^A-Za-z0-9 ()%]+', ' ', category).lstrip()
+            lburl = y['weblink']
+            print name + ' ' + category
+            sql = 'INSERT INTO games VALUES ("' + name + '", "' + consoles + '", "' + category + '", "' + logourl + '", "' + lburl + '")'
+            print sql
+            db.cursor().execute(sql)
+            db.commit()
+      flag = False
+      for x in data['pagination']['links']:
+        if x['rel'] == 'next':
+          flag = True
+          url = x['uri']
 @app.route("/")
 def hello():
   db = get_db()
