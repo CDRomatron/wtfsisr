@@ -37,10 +37,18 @@ def populate_db():
         for y in x['categories']['data']:
           if y['type'] == 'per-game':
             category = y['name']
-            category = re.sub('[^A-Za-z0-9 ()%]+', ' ', category).lstrip()
+            category = re.sub('[^A-Za-z0-9 ()%+]+', ' ', category).lstrip()
             lburl = y['weblink']
             print name + ' ' + category
-            sql = 'INSERT INTO games VALUES ("' + name + '", "' + consoles + '", "' + category + '", "' + logourl + '", "' + lburl + '")'
+            noExactParticipants = 0
+            noUpToParticipants = 0
+
+            if y['players']['type'] == 'exactly':
+              noExactParticipants = y['players']['value']
+            elif y['players']['type'] == 'up-to':
+              noUpToParticipants = y['players']['value']
+
+            sql = 'INSERT INTO games VALUES ("' + name + '", "' + consoles + '", "' + category + '", "' + logourl + '", "' + lburl + '",' + str(noExactParticipants)  + ',' + str(noUpToParticipants) + ')'
             print sql
             db.cursor().execute(sql)
             db.commit()
@@ -69,10 +77,77 @@ def hello():
     page.append('"><img src="')
     page.append(row[3])
     page.append('"/></a></td>')
+    page.append('<td>')
+    page.append(str(row[5]) + ',' + str(row[6]))
+    page.append('</td>')
     page.append('</tr>')
 
   page.append('</table></body></html>')
   return ''.join(page)
+
+@app.route("/player/<count>")
+def hello2(count):
+  db = get_db()
+
+  page = []
+  page.append('<html><body><table bgcolor="#bfbfbf">')
+  sql = 'SELECT * FROM games WHERE exactParticipants = ' + count + ' OR upToParticipants >= ' + count 
+  for row in db.cursor().execute(sql):
+    page.append('<tr>')
+    page.append('<td>')
+    page.append(row[0])
+    page.append('</td>')
+    page.append('<td>')
+    page.append(row[2])
+    page.append('</td>')
+    page.append('<td><a href="')
+    page.append(row[4])
+    page.append('"><img src="')
+    page.append(row[3])
+    page.append('"/></a></td>')
+    page.append('<td>')
+    page.append(str(row[5]) + ',' + str(row[6]))
+    page.append('</td>')
+    page.append('</tr>')
+
+  page.append('</table></body></html>')
+  return ''.join(page)
+
+@app.route("/test/")
+def test():
+  db = get_db()
+
+  page = []
+  page.append('<html><body><table bgcolor="#bfbfbf" border="1">')
+  sql = 'SELECT * FROM games'
+  for row in db.cursor().execute(sql):
+    page.append('<tr>')
+    page.append('<td>')
+    page.append(row[0])
+    page.append('</td>')
+    page.append('<td>')
+    page.append(row[1])
+    page.append('</td>')
+    page.append('<td>')
+    page.append(row[2])
+    page.append('</td>')
+    page.append('<td>')
+    page.append(row[3])
+    page.append('</td>')
+    page.append('<td>')
+    page.append(row[4])
+    page.append('</td>')
+    page.append('<td>')
+    page.append(str(row[5]))
+    page.append('</td>')
+    page.append('<td>')
+    page.append(str(row[6]))
+    page.append('</td>')
+    page.append('</tr>')
+
+  page.append('</table></body></html>')
+  return ''.join(page)
+
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0')

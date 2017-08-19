@@ -5,5 +5,7 @@ CREATE TABLE games (
   consoles text,
   category text,
   logourl text,
-  leaderboardurl text
+  leaderboardurl text,
+  exactParticipants integer,
+  uptoParticipants integer
 );
