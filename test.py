@@ -57,6 +57,14 @@ def populate_db():
         if x['rel'] == 'next':
           flag = True
           url = x['uri']
+    consoleurl = 'http://www.speedrun.com/api/v1/platforms?max=120'
+    response = urllib.urlopen(url)
+    consoledata = json.loads(response.read())
+
+    for x in consoledata['data']:
+      db.cursor().execute('INSERT INTO consoles VALUES ("' + x['name'] + '", "' + x['id'] + '")')
+      db.commit()
+
 @app.route("/")
 def hello():
   db = get_db()
