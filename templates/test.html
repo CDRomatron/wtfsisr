@@ -1,0 +1,10 @@
+<!doctype html>
+  <body>
+    <form name="choose_form" action="" method="post">
+      {% for console in consoles %}
+        <input type="checkbox" name="{{ console[1] }}" value="{{ console[1] }}">{{ console[0] }}<br>
+      {% endfor %}
+      <input type="submit" value="Submit">
+    </form>
+  </body>
+</html>
