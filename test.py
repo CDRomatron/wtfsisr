@@ -197,10 +197,14 @@ def form():
 
 @app.route("/html/")
 def html():
-  consoles = []
-  for i in range(9):
-    consoles.append(i)
-  return render_template('index.html', consoles=consoles)
+    db = get_db()
+
+    sql = 'SELECT * FROM consoles'
+    consoles = []
+    for row in db.cursor().execute(sql):
+      consoles.append(row)
+
+    return render_template('index.html', consoles=consoles)
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0')
