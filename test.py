@@ -169,9 +169,9 @@ def form():
     for console in request.form:
       consoleIDs.append(console)
 
-    sql = 'SELECT name, category, logourl FROM games WHERE consoles '
+    sql = 'SELECT * FROM games WHERE '
     for ID in consoleIDs:
-      sql += 'LIKE \'%' + ID + '%\' OR '
+      sql += 'consoles LIKE \'%' + ID + '%\' OR '
 
     sql = sql[:-3]
 
@@ -184,7 +184,7 @@ def form():
     for row in db.cursor().execute(sql):
       game = str(row)
 
-    return row
+    return game
   else:
     db = get_db()
 
@@ -194,6 +194,13 @@ def form():
       consoles.append(row)
 
     return render_template('test.html', consoles=consoles)
+
+@app.route("/html/")
+def html():
+  consoles = []
+  for i in range(9):
+    consoles.append(i)
+  return render_template('index.html', consoles=consoles)
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0')
