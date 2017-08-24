@@ -199,10 +199,14 @@ def form():
 def html():
     db = get_db()
 
-    sql = 'SELECT * FROM consoles'
+    basesql = 'SELECT * FROM consoles '
+    letters = ['0%\' OR name LIKE \'1%\' OR name LIKE \'2%\' OR name LIKE \'3%\' OR name LIKE \'4%\' OR name LIKE \'5%\' OR name LIKE \'6%\' OR name LIKE \'7%\' OR name LIKE \'8%\' OR name LIKE \'9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     consoles = []
-    for row in db.cursor().execute(sql):
-      consoles.append(row)
+    for i in range(27):
+      consoles.append([])
+      sql = basesql + 'WHERE lower(name) LIKE \'' + letters[i]  + '%\''
+      for row in db.cursor().execute(sql):
+        consoles[i].append(row)
 
     return render_template('index.html', consoles=consoles)
 

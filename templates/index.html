@@ -1,6 +1,8 @@
 <html>
   <head>
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <style>
       #wrapper {
        width: 80%; 
@@ -12,15 +14,59 @@
       <h1>WTFSISR</h1>
       <b>What the fuck should you speedrun? Pick your fucking consoles</b>
       <form name="choose_form" action="" method="post">
-        {% set counter = 0 %}
-        {% for console in consoles %}
-          <input type="checkbox">{{ console[0] }}  
-          {% set counter = counter + 1 %}
-          {% if counter is divisibleby(3) %}
-            <br>
-          {% endif %}
+        <div class="container">
+          <ul class="nav nav-pills">
+            <li><a href="#1" data-toggle="tab">0-9</a></li>
+            <li><a href="#2" data-toggle="tab">A-D</a></li>
+            <li><a href="#3" data-toggle="tab">E-H</a></li>
+            <li><a href="#4" data-toggle="tab">I-L</a></li>
+            <li><a href="#5" data-toggle="tab">M-P</a></li>
+            <li><a href="#6" data-toggle="tab">Q-T</a></li>
+            <li><a href="#7" data-toggle="tab">U-W</a></li>
+            <li><a href="#8" data-toggle="tab">X-Z</a></li>
+          </ul>
+          
+          <div class="tab-content clearfix">
+            {% set index = 0 %}
+            {% set tabtracker = 1 %}
+            
+            {% for console in consoles %}
+              {% if index == 0 or index == 1 or index == 5 or index == 9 or index == 13 or index == 17 or index == 21 or index == 24 %}
+                <div class="tab-pane" id="{{ tabtracker }}">
+              {% endif %}
+              {% if console|length > 0 %}
+                {% set grouptracker = 1 %}
+                {% for individualconsole in console %}
+                  <input type="checkbox">{{ individualconsole[0]  }}
+                  {% if grouptracker is divisibleby(3) or console|length == grouptracker %}
+                    <br>
+                  {% endif %}
+                  {% set grouptracker = grouptracker + 1 %}
+                {% endfor %}
+              {% endif %}
+              {% if index == 0 or index == 4 or index == 8 or index == 12 or index == 16 or index == 20 or index == 23 or index == 26 %}
+                </div>
+                {% set tabtracker = tabtracker + 1 %}
+              {% endif %}
+              {% set index = index + 1 %}
+            {% endfor %}
+        </div>
+        
+        <!--{% for console in consoles %}
+          {% set counter = 0 %}
+          {% for ind in console %}
+            {% if counter is divisibleby(3) %}
+              {% if counter != 0 %}
+                <br>
+              {% endif %}
+            {% endif %}
+            <input type="checkbox">{{ ind[0] }}  
+            {% set counter = counter + 1 %}
+          {% endfor %}
+          <br>
         {% endfor %}
-        <input type="submit">
+        </ul>
+        <input type="submit">-->
       </form>
     </div>
   </body>
