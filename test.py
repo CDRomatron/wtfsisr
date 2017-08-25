@@ -210,5 +210,9 @@ def html():
 
     return render_template('index.html', consoles=consoles)
 
+@app.route("/result/", methods=['POST'])
+def result():
+  return str(request.form)
+
 if __name__ == "__main__":
   app.run(host='0.0.0.0')

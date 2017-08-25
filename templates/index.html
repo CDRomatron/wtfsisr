@@ -3,6 +3,7 @@
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/verification.js') }}"></script>
     <style>
       #wrapper {
        width: 80%; 
@@ -13,17 +14,17 @@
     <div class="text-center">
       <h1>WTFSISR</h1>
       <b>What the fuck should you speedrun? Pick your fucking consoles</b>
-      <form name="choose_form" action="" method="post">
+      <form name="choose_form" action="/result/" method="post">
         <div class="container">
           <ul class="nav nav-pills">
             <li><a href="#1" data-toggle="tab">0-9</a></li>
-            <li><a href="#2" data-toggle="tab">A-D</a></li>
-            <li><a href="#3" data-toggle="tab">E-H</a></li>
-            <li><a href="#4" data-toggle="tab">I-L</a></li>
-            <li><a href="#5" data-toggle="tab">M-P</a></li>
-            <li><a href="#6" data-toggle="tab">Q-T</a></li>
-            <li><a href="#7" data-toggle="tab">U-W</a></li>
-            <li><a href="#8" data-toggle="tab">X-Z</a></li>
+            <li><a href="#2" data-toggle="tab">ABCD</a></li>
+            <li><a href="#3" data-toggle="tab">EFGH</a></li>
+            <li><a href="#4" data-toggle="tab">IJKL</a></li>
+            <li><a href="#5" data-toggle="tab">MNOP</a></li>
+            <li><a href="#6" data-toggle="tab">QRST</a></li>
+            <li><a href="#7" data-toggle="tab">UVW</a></li>
+            <li><a href="#8" data-toggle="tab">XYZ</a></li>
           </ul>
           
           <div class="tab-content clearfix">
@@ -37,7 +38,7 @@
               {% if console|length > 0 %}
                 {% set grouptracker = 1 %}
                 {% for individualconsole in console %}
-                  <input type="checkbox">{{ individualconsole[0]  }}
+                  <input type="checkbox" id="consolecheckbox" name="consoleid" value="{{ individualconsole[1] }}">{{ individualconsole[0]  }}
                   {% if grouptracker is divisibleby(3) or console|length == grouptracker %}
                     <br>
                   {% endif %}
@@ -51,22 +52,28 @@
               {% set index = index + 1 %}
             {% endfor %}
         </div>
-        
-        <!--{% for console in consoles %}
-          {% set counter = 0 %}
-          {% for ind in console %}
-            {% if counter is divisibleby(3) %}
-              {% if counter != 0 %}
-                <br>
-              {% endif %}
-            {% endif %}
-            <input type="checkbox">{{ ind[0] }}  
-            {% set counter = counter + 1 %}
-          {% endfor %}
-          <br>
-        {% endfor %}
-        </ul>
-        <input type="submit">-->
+        <br><br>
+        <b>Select number of players:</b>
+        <select name="players">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+        </select>
+        <br><br>
+        <input type="submit" id="Submit" disabled>
       </form>
     </div>
   </body>
