@@ -38,7 +38,7 @@
               {% if console|length > 0 %}
                 {% set grouptracker = 1 %}
                 {% for individualconsole in console %}
-                  <input type="checkbox" id="consolecheckbox" name="consoleid" value="{{ individualconsole[1] }}">{{ individualconsole[0]  }}
+                  <input type="checkbox" id="consolecheckbox" name="{{ individualconsole[1] }}" value="{{ individualconsole[1] }}">{{ individualconsole[0]  }}
                   {% if grouptracker is divisibleby(3) or console|length == grouptracker %}
                     <br>
                   {% endif %}

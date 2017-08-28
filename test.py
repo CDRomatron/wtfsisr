@@ -169,6 +169,8 @@ def form():
     for console in request.form:
       consoleIDs.append(console)
 
+    print len(consoleIDs)
+
     sql = 'SELECT * FROM games WHERE '
     for ID in consoleIDs:
       sql += 'consoles LIKE \'%' + ID + '%\' OR '
@@ -212,6 +214,10 @@ def html():
 
 @app.route("/result/", methods=['POST'])
 def result():
+  for data in request.form:
+    print str(data)
+
+  print str(request.form['players'])
   return str(request.form)
 
 if __name__ == "__main__":
