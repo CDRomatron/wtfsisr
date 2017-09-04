@@ -214,11 +214,51 @@ def html():
 
 @app.route("/result/", methods=['POST'])
 def result():
-  for data in request.form:
-    print str(data)
 
-  print str(request.form['players'])
-  return str(request.form)
+  consoles = []
+  players = ''
+
+  for data in request.form:
+    if str(request.form[str(data)]) == 'console':
+      consoles.append(data)
+  
+  players = str(request.form['players'])
+  
+  postedData = []
+  postedData.append(['players', players])
+  for console in consoles:
+    postedData.append([console, 'console'])
+
+
+  #DO SQL SAFETY HERE
+  
+
+  db = get_db()
+  game = ''
+  imageurl = ''
+  category = ''
+  url = ''
+
+  sql = 'SELECT * FROM games WHERE (exactParticipants = ' + players + ' OR uptoParticipants >= ' + players + ') AND ('
+  for ID in consoles:
+    sql += 'consoles LIKE \'%' + ID + '%\' OR '
+
+  sql = sql[:-4]
+
+  sql += ') ORDER BY RANDOM() LIMIT 1'
+
+  db = get_db()
+
+  game = ''
+  print sql
+  for row in db.cursor().execute(sql):
+    print str(row)
+    game = str(row[0])
+    imageurl = str(row[3])
+    category = str(row[2])
+    url = str(row[4])
+
+  return render_template('result.html', game = game, imageurl = imageurl, category = category, url = url, request = postedData)
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0')

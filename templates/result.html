@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="text-center">
+      <h1>You should play {{ game }}!</h1>
+      <br><br>
+      <img src="{{ imageurl }}"/>
+      <br><br>
+      <b>Category: {{ category }}</b>
+      <br><br>
+      <b>Link: <a href="{{ url }}">{{ url }}</a></b>
+      <form action="/result/" method="post">
+        {% for post in request %}
+          <input type="hidden" name="{{ post[0] }}" value="{{ post[1] }}">
+        {% endfor %}
+        <input type="submit">
+      </form>
+    </div>
+  </body>
+</html>
