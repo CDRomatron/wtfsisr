@@ -258,7 +258,7 @@ def result():
     category = str(row[2])
     url = str(row[4])
 
-  return render_template('result.html', game = game, imageurl = imageurl, category = category, url = url, request = postedData)
+  return render_template('result.html', game = game.upper(), imageurl = imageurl, category = category, url = url, request = postedData)
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0')
