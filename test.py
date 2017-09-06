@@ -1,4 +1,4 @@
-from flask import Flask, g, render_template, request
+from flask import Flask, g, render_template, request, abort
 import urllib, json, sqlite3, re
 app = Flask(__name__)
 db_location = 'var/games.db'
@@ -221,17 +221,21 @@ def result():
   for data in request.form:
     if str(request.form[str(data)]) == 'console':
       consoles.append(data)
-  
+
   players = str(request.form['players'])
-  
+
   postedData = []
   postedData.append(['players', players])
   for console in consoles:
-    postedData.append([console, 'console'])
+    if len(console) == 8:
+      consoleCheck = re.sub('[^a-z0-9]', '', console).lstrip()
+      if len(consoleCheck) == 8:
+        postedData.append([console, 'console'])
 
+  passed=True
 
-  #DO SQL SAFETY HERE
-  
+  if not players.isdigit():
+    abort(400)
 
   db = get_db()
   game = ''
@@ -258,7 +262,10 @@ def result():
     category = str(row[2])
     url = str(row[4])
 
+  if game == '':
+    return render_template('missing.html')
+
   return render_template('result.html', game = game.upper(), imageurl = imageurl, category = category, url = url, request = postedData)
 
 if __name__ == "__main__":
-  app.run(host='0.0.0.0')
+  app.run(host='0.0.0.0', threaded=True)
